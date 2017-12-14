@@ -51,16 +51,42 @@
 
         <div id="app"></div>
         <script>
+            /*  React.createElement('div/p/button/input/', {
+                                        properties e.g.
+                                        className: ""
+                                    }
+                                */
+
+            //also
+
+            /* React.createElement('an instance of a React class can go here', {
+                    properties e.g. 
+                    name: ""
+                    
+                    //properties here can be passed down to the class...and accessed as this.props.whatever..e.g.. this.props.name
+                    
+                } 
+            */
+
+
+            // react's createClass Method behaves just like a normal class
+            //e.g  var TutorialTemplate = React.createClass ====  var TutorialTemplate = new Class
+
             var TutorialTemplate = React.createClass({
-                displayName: 'HelloMessage',
-                className: "red",
+                //render is method also from react, that literally displays its content to the screen.
+
                 render: function render() {
+                    //this array was created to house the results of the for loop, used to create li elements.
                     let arr = [];
+
+                    //for ..of, returns the values from an array, unlike a for...in which returns the keys.
+                    // arr[key] = value;
 
                     for (let ech of this.props.howto) {
                         arr.push(React.createElement('li', {}, ech));
                     }
 
+                    //return is used cause it's standard practice to actually return something even if its null when utilizing functions.
 
                     return (
                         React.createElement('div', {
@@ -89,7 +115,6 @@
                 ]
 
             });
-
             var TutorialTwo = React.createElement(TutorialTemplate, {
                 title: 'Curried Egg Salad',
                 description: 'bals bls bals alsjsd alsdaj',
@@ -99,8 +124,6 @@
                     "1 16oz package wide egg noodles", "1 cup cooked chicken"
                 ]
             });
-
-
             var TutorialThree = React.createElement(TutorialTemplate, {
                 title: 'Chicken Noodle Something',
                 description: 'bals bls bals alsjsd alsdaj',
@@ -113,20 +136,51 @@
 
             var FormInstance = React.createClass({
 
+                //this is essentially how a state object is created.
                 getInitialState: function() {
                     return {
-                        title: "Hello!"
+                        title: "Hello!",
+                        howto: [],
+                        title: "",
+                        description: "",
+                        currentHowTo: ""
                     };
                 },
 
+                // this is a function i created, to help me handle the changes from inputs,
+                // it takes an event and the what just helps me identify which input i'm messing with.
                 handleChange: function(evt, what) {
+
                     this.setState({
                         [what]: evt.target.value
                     });
                 },
 
+                /*
+            
+                1. this.setState({ key: value}) is how we change states.
+                2. this is also a valid syntax.  this.setState((prevState, props)=>{return {key: value} });
+            
+                we use number 2 when we want super immediate changes and also when the new value of the state relies on the old value of the state.
+            
+                */
+
+                //  this is a function i created, to help me handle the submission of the form.
+
                 handleSubmit: function(evt) {
-                    console.log(this.state);
+
+                    //evt.preventDefault() , stops the form submission from refreshing the page.
+
+                    evt.preventDefault();
+
+                    //this function was actually passed down from the App Instance. Line 244.
+                    this.props.addTo(
+                        React.createElement(TutorialTemplate, {
+                            title: this.state.title,
+                            description: this.state.description,
+                            howto: this.state.howto
+                        })
+                    )
                 },
 
                 render: function() {
@@ -134,8 +188,9 @@
                         React.createElement("form", {
                                 onSubmit: this.handleSubmit
                             },
+
                             React.createElement("input", {
-                                title: this.state.value,
+                                value: this.state.value,
                                 onChange: (e) => {
                                     this.handleChange(e, "title")
                                 },
@@ -143,22 +198,50 @@
                             }),
 
                             React.createElement("textarea", {
-                                description: this.state.textarea,
+                                value: this.state.textarea,
                                 onChange: (e) => {
                                     this.handleChange(e, "description")
                                 },
-                                placeholder: "Shana wole"
+                                placeholder: "Description about the food thing goes here."
                             }),
 
                             React.createElement("input", {
-                                value: this.state.value,
-                                onChange: this.handleChange,
-                                placeholder: "Shana wole"
+                                value: this.state.currentHowTo,
+                                onChange: (e) => {
+                                    this.handleChange(e, "currentHowTo")
+                                },
+                                placeholder: "A How to goes here"
+                            }),
+
+                            React.createElement("input", {
+                                onClick: () => {
+                                    this.setState((prevState) => {
+                                        howto: prevState.howto.push(prevState.currentHowTo)
+                                    })
+                                },
+                                value: "Add A Step",
+                                type: "button"
+                            }),
+
+                            React.createElement("input", {
+                                onClick: () => {
+                                    this.setState((prevState) => {
+                                        howto: prevState.howto.pop()
+                                    })
+                                },
+                                value: "Delete Last Step",
+                                type: "button"
                             }),
 
                             React.createElement("input", {
                                 value: "Submit",
                                 type: "submit"
+                            }),
+
+                            React.createElement(TutorialTemplate, {
+                                title: this.state.title,
+                                description: this.state.description,
+                                howto: this.state.howto
                             })
                         )
 
@@ -167,21 +250,40 @@
 
             });
 
-            var Form = React.createElement(FormInstance, {});
+            var AppInstance = React.createClass({
+                getInitialState: function() {
+                    return {
+                        tutorials: [TutorialOne, TutorialTwo, TutorialTwo]
+                    };
+                },
 
+                addTo: function(obj) {
+                    this.setState((prevState) => {
+                        tutorials: prevState.tutorials.push(obj)
+                    })
+                },
+                render: function() {
+                    return (
+                        React
+                        .createElement(
+                            'div', {},
+                            this.state.tutorials,
+                            React.createElement("div", {
+                                className: "clearfix"
+                            }),
+                            React.createElement(FormInstance, {
+                                addTo: this.addTo
+                            }))
+                    );
+                }
 
-            listOfTutorials = [TutorialOne, TutorialTwo, TutorialTwo];
+            })
 
-            const clearfix = React.createElement("div", {
-                className: "clearfix"
-            }, "");
+            var App = React.createElement(AppInstance, {});
 
-            const Tutorials = React.createElement('div', {}, listOfTutorials, clearfix, Form);
+            // ReactDOM.render essentially is react's way of compiling everything down to html and js and then appending that to an already existing element with an id of 'app';
 
-
-
-
-            ReactDOM.render(Tutorials, document.getElementById('app'));
+            ReactDOM.render(App, document.getElementById('app'));
         </script>
     </body>
 
