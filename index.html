@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <script src="https://fb.me/react-15.2.0.js"></script>
+        <script src="https://fb.me/react-dom-15.2.0.js"></script>
+        <style>
+            html,
+            body {
+                margin: 0;
+                padding: 20px 0px;
+            }
+            
+            * {
+                box-sizing: border-box;
+            }
+            
+            .tutorial-box {
+                font-size: 15px;
+                float: left;
+                font-family: sans-serif;
+            }
+            
+            @media(max-width: 767px) {
+                .tutorial-box {
+                    width: 100%;
+                }
+            }
+            
+            @media(min-width: 768px) {
+                .tutorial-box {
+                    width: 33%;
+                }
+            }
+            
+            .inner {
+                box-shadow: 0px 0px 1px 0px #ccc;
+                width: 90%;
+                padding: 20px;
+                margin: auto;
+            }
+            
+            .clearfix {
+                clear: both;
+                overflow: auto;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div id="app"></div>
+        <script>
+            var TutorialTemplate = React.createClass({
+                displayName: 'HelloMessage',
+                className: "red",
+                render: function render() {
+                    let arr = [];
+
+                    for (let ech of this.props.howto) {
+                        arr.push(React.createElement('li', {}, ech));
+                    }
+
+
+                    return (
+                        React.createElement('div', {
+                                className: 'tutorial-box'
+                            },
+                            React.createElement('div', {
+                                    className: 'inner'
+                                },
+                                React.createElement('h3', {}, this.props.title),
+                                React.createElement('ul', {}, arr),
+                                React.createElement('p', {}, this.props.description)
+                            )
+                        )
+
+                    );
+                }
+            });
+
+            var TutorialOne = React.createElement(TutorialTemplate, {
+                title: 'Chicken Noodle Soup',
+                description: 'chop and sauce onion, carrots, and celery in olive oil unitl soft. Add chicken borth and bring to boil. Add egg noodles and cook unitl soft. Add chicken and simmer.',
+                howto: ["2 tablespoons extra-virgin olive oil",
+                    "1 yellow onion", "2 medium carrots",
+                    "2 stalks celery", "8 cups chicken broth",
+                    "1 16oz package wide egg noodles", "1 cup cooked chicken"
+                ]
+
+            });
+
+            var TutorialTwo = React.createElement(TutorialTemplate, {
+                title: 'Curried Egg Salad',
+                description: 'bals bls bals alsjsd alsdaj',
+                howto: ["2 tablespoons extra-virgin olive oil",
+                    "1 yellow onion", "2 medium carrots",
+                    "2 stalks celery", "8 cups chicken broth",
+                    "1 16oz package wide egg noodles", "1 cup cooked chicken"
+                ]
+            });
+
+
+            var TutorialThree = React.createElement(TutorialTemplate, {
+                title: 'Chicken Noodle Something',
+                description: 'bals bls bals alsjsd alsdaj',
+                howto: ["2 tablespoons extra-virgin olive oil",
+                    "1 yellow onion", "2 medium carrots",
+                    "2 stalks celery", "8 cups chicken broth",
+                    "1 16oz package wide egg noodles", "1 cup cooked chicken"
+                ]
+            });
+
+            var FormInstance = React.createClass({
+
+                getInitialState: function() {
+                    return {
+                        title: "Hello!"
+                    };
+                },
+
+                handleChange: function(evt, what) {
+                    this.setState({
+                        [what]: evt.target.value
+                    });
+                },
+
+                handleSubmit: function(evt) {
+                    console.log(this.state);
+                },
+
+                render: function() {
+                    return (
+                        React.createElement("form", {
+                                onSubmit: this.handleSubmit
+                            },
+                            React.createElement("input", {
+                                title: this.state.value,
+                                onChange: (e) => {
+                                    this.handleChange(e, "title")
+                                },
+                                placeholder: "Shana wole"
+                            }),
+
+                            React.createElement("textarea", {
+                                description: this.state.textarea,
+                                onChange: (e) => {
+                                    this.handleChange(e, "description")
+                                },
+                                placeholder: "Shana wole"
+                            }),
+
+                            React.createElement("input", {
+                                value: this.state.value,
+                                onChange: this.handleChange,
+                                placeholder: "Shana wole"
+                            }),
+
+                            React.createElement("input", {
+                                value: "Submit",
+                                type: "submit"
+                            })
+                        )
+
+                    );
+                }
+
+            });
+
+            var Form = React.createElement(FormInstance, {});
+
+
+            listOfTutorials = [TutorialOne, TutorialTwo, TutorialTwo];
+
+            const clearfix = React.createElement("div", {
+                className: "clearfix"
+            }, "");
+
+            const Tutorials = React.createElement('div', {}, listOfTutorials, clearfix, Form);
+
+
+
+
+            ReactDOM.render(Tutorials, document.getElementById('app'));
+        </script>
+    </body>
+
+</html>
